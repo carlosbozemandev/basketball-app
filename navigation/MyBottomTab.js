@@ -2,10 +2,10 @@ import { View, Text } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "../screens/Home";
-import PlayerProfile from "../screens/PlayerProfile";
 import MyTeam from "../screens/MyTeam";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../theme";
+import Players from "../screens/Players";
 
 const Tab = createBottomTabNavigator();
 
@@ -58,8 +58,8 @@ export default function MyBottomTab() {
         }}
       />
       <Tab.Screen
-        name="Player"
-        component={PlayerProfile}
+        name="Players"
+        component={Players}
         options={{
           title: "Players",
           tabBarIcon: ({ focused }) => (

@@ -1,7 +1,5 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import Home from "../screens/Home";
 import PlayerProfile from "../screens/PlayerProfile";
-import MyTeam from "../screens/MyTeam";
 import MyBottomTab from "./MyBottomTab";
 
 const Stack = createStackNavigator();
@@ -16,6 +14,7 @@ function MyStack() {
       }}
     >
       <Stack.Screen name="TabScreen" component={MyBottomTab} />
+      <Stack.Screen name="PlayerProfile" component={PlayerProfile} />
     </Stack.Navigator>
   );
 }
