@@ -1,10 +1,15 @@
 // Importing necessary components and modules from React and React Native
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
+import { usePlayers } from "../context/PlayerContext";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/native";
 
 // Functional component for the My Team Screen
 const MyTeamScreen = () => {
   // Sample data for the user's team
+  const navigation = useNavigation();
+  const { players } = usePlayers();
   const teamData = {
     name: "My Awesome Team",
     logo: "https://tipsscore.com/resb/team/bc-wolves.png",
@@ -40,40 +45,55 @@ const MyTeamScreen = () => {
     ],
   };
 
+  console.log("players data from context", players);
+
   return (
     // Container view for the My Team Screen
     <View style={styles.container}>
-      {/* Team logo */}
-      <Image source={{ uri: teamData.logo }} style={styles.teamLogo} />
+      {players?.length > 0 ? (
+        <>
+          {/* Team logo */}
+          <Image source={{ uri: teamData.logo }} style={styles.teamLogo} />
 
-      {/* Team name */}
-      <Text style={styles.teamName}>{teamData.name}</Text>
+          {/* Team name */}
+          <Text style={styles.teamName}>{teamData.name}</Text>
 
-      {/* Section heading for team players */}
-      <Text style={styles.sectionHeading}>Team Players:</Text>
+          {/* Section heading for team players */}
+          <Text style={styles.sectionHeading}>Team Players:</Text>
 
-      {/* Mapping through each player in the teamData to display player cards */}
-      {teamData.players.map((player) => (
-        // View for each player card
-        <View key={player.id} style={styles.playerCard}>
-          {/* Player image */}
-          <Image source={{ uri: player.photo }} style={styles.playerImage} />
+          {/* Mapping through each player in the teamData to display player cards */}
+          {teamData.players.map((player) => (
+            // View for each player card
+            <View key={player.id} style={styles.playerCard}>
+              {/* Player image */}
+              <Image
+                source={{ uri: player.photo }}
+                style={styles.playerImage}
+              />
 
-          {/* Player information */}
-          <View style={styles.playerInfo}>
-            {/* Player name */}
-            <Text style={styles.playerName}>{player.name}</Text>
+              {/* Player information */}
+              <View style={styles.playerInfo}>
+                {/* Player name */}
+                <Text style={styles.playerName}>{player.name}</Text>
 
-            {/* Player position */}
-            <Text style={styles.playerPosition}>{player.position}</Text>
+                {/* Player position */}
+                <Text style={styles.playerPosition}>{player.position}</Text>
 
-            {/* Player details (age and height) */}
-            <Text
-              style={styles.playerDetails}
-            >{`Age: ${player.age} | Height: ${player.height}m`}</Text>
-          </View>
-        </View>
-      ))}
+                {/* Player details (age and height) */}
+                <Text
+                  style={styles.playerDetails}
+                >{`Age: ${player.age} | Height: ${player.height}m`}</Text>
+              </View>
+            </View>
+          ))}
+        </>
+      ) : (
+        <TouchableOpacity
+          onPress={() => navigation.navigate("CreateTeamScreen")}
+        >
+          <Text>Create your own team</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

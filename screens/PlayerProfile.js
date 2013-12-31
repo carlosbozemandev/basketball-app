@@ -12,54 +12,56 @@ const PlayerScreen = ({ route }) => {
     // Image background for the Player Screen
     <ImageBackground
       source={{
-        uri: player.photo,
+        uri: player?.photo,
       }}
       style={styles.container}
     >
       {/* SafeAreaView for handling content within the safe area of the device */}
       <SafeAreaView style={styles.overlay}>
         {/* Player image */}
-        <Image source={{ uri: player.photo }} style={styles.playerImage} />
+        <Image source={{ uri: player?.photo }} style={styles.playerImage} />
 
         {/* Player information view */}
         <View style={styles.playerInfo}>
           {/* Player name */}
-          <Text style={styles.playerName}>{player.name}</Text>
+          <Text style={styles.playerName}>{player?.name}</Text>
 
           {/* Player position */}
           <Text
             style={styles.playerPosition}
-          >{`Position: ${player.position_name}`}</Text>
+          >{`Position: ${player?.position_name}`}</Text>
 
           {/* Player age */}
-          <Text style={styles.playerAge}>{`Age: ${player.age}`}</Text>
+          <Text style={styles.playerAge}>{`Age: ${player?.age}`}</Text>
 
           {/* Player height */}
-          <Text style={styles.playerHeight}>{`Height: ${player.height}m`}</Text>
+          <Text
+            style={styles.playerHeight}
+          >{`Height: ${player?.height}m`}</Text>
 
           {/* Player weight */}
           <Text
             style={styles.playerHeight}
-          >{`Weight: ${player.weight}kg`}</Text>
+          >{`Weight: ${player?.weight}kg`}</Text>
 
           {/* Player Shirt Number */}
           <Text
             style={styles.playerHeight}
-          >{`Shirt Number: ${player.shirt_number}`}</Text>
+          >{`Shirt Number: ${player?.shirt_number}`}</Text>
 
           {/* Player Flag */}
-          <Text style={styles.playerHeight}>{`Country: ${player.flag}`}</Text>
+          <Text style={styles.playerHeight}>{`Country: ${player?.flag}`}</Text>
 
           {/* Team details */}
           <View style={styles.teamInfo}>
             {/* Team name */}
             <Text
               style={styles.teamName}
-            >{`Team: ${player.main_team.name}`}</Text>
+            >{`Team: ${player?.main_team?.name}`}</Text>
 
             {/* Team logo */}
             <Image
-              source={{ uri: player.main_team.logo }}
+              source={{ uri: player?.main_team?.logo }}
               style={styles.teamLogo}
             />
           </View>

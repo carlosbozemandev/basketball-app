@@ -4,6 +4,7 @@ import PlayerProfile from "../screens/PlayerProfile";
 import MyBottomTab from "./MyBottomTab";
 import OnboardingScreen from "../screens/OnboardingScreens/OnboardingScreen";
 import SignupScreen from "../screens/SignupScreen";
+import CreateTeamScreen from "../screens/CreateTeamScreen";
 
 // Creating a stack navigator using createStackNavigator
 const Stack = createStackNavigator();
@@ -59,6 +60,13 @@ function MyStack() {
         component={PlayerProfile}
         options={{
           title: "Player Profile", // Set the header title for this screen
+        }}
+      />
+      <Stack.Screen
+        name="CreateTeamScreen"
+        component={CreateTeamScreen}
+        options={{
+          title: "Create Team", // Set the header title for this screen
         }}
       />
     </Stack.Navigator>

@@ -82,8 +82,11 @@ const PlayersScreen = () => {
         <Text style={styles.playerDetails}>
           {`Age: ${item?.age} | Height: ${item?.height}m`}
         </Text>
-        <Text style={styles.teamName}>{`Team: ${item?.team?.name}`}</Text>
-        <Image source={{ uri: item?.team?.logo }} style={styles.teamLogo} />
+        <Text style={styles.teamName}>{`Team: ${item?.main_team?.name}`}</Text>
+        <Image
+          source={{ uri: item?.main_team?.logo }}
+          style={styles.teamLogo}
+        />
       </View>
     </TouchableOpacity>
   );
