@@ -1,5 +1,4 @@
-// Importing necessary components and modules from React and React Native
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -8,53 +7,34 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
+  Linking,
 } from "react-native";
+import { colors } from "../theme";
+const url =
+  "https://tank01-fantasy-stats.p.rapidapi.com/getNBANews?recentNews=true&maxItems=50";
+const options = {
+  method: "GET",
+  headers: {
+    "X-RapidAPI-Key": "d86b55a31emsh20bdf138bb0c79fp16104djsn08cbc3b5570f",
+    "X-RapidAPI-Host": "tank01-fantasy-stats.p.rapidapi.com",
+  },
+};
 
 // Functional component for the Home Screen
 const HomeScreen = ({ navigation }) => {
-  // Sample data for player cards
-  const playersData = [
-    // Player 1
-    {
-      id: "1",
-      name: "Player 1",
-      image:
-        "https://cdn.vox-cdn.com/thumbor/LDajBWPPYMNb3ZGm1IJAfRXIIoE=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/24775948/1506053682.jpg",
-      stats: "Stats 1",
-    },
-    // Player 2
-    {
-      id: "2",
-      name: "Player 2",
-      image:
-        "https://i.guim.co.uk/img/media/0eded50be085ea327572a9a1bb6e2712eb59fff4/0_35_5023_3014/master/5023.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=c46ba8019b460e965a1c484da680f867",
-      stats: "Stats 2",
-    },
-    // Player 3
-    {
-      id: "3",
-      name: "Player 3",
-      image:
-        "https://snworksceo.imgix.net/rce/cc1ff6ea-4f02-4d48-9149-2284bd4aa10e.sized-1000x1000.jpg?w=1000",
-      stats: "Stats 3",
-    },
-    // Player 4
-    {
-      id: "4",
-      name: "Player 4",
-      image:
-        "https://snworksceo.imgix.net/rce/cc1ff6ea-4f02-4d48-9149-2284bd4aa10e.sized-1000x1000.jpg?w=1000",
-      stats: "Stats 4",
-    },
-    // Player 5
-    {
-      id: "5",
-      name: "Player 5",
-      image:
-        "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2022/10/1200/675/Steeve-Ho-You-Fat2.jpg?ve=1&tl=1",
-      stats: "Stats 5",
-    },
-  ];
+  const [news, setNews] = React.useState([]);
+
+  useEffect(() => {
+    fetch(url, options)
+      .then((res) => res.json())
+      .then((res) => {
+        setNews(res.body);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
 
   return (
     // Background Image for the Home Screen
@@ -65,53 +45,53 @@ const HomeScreen = ({ navigation }) => {
       style={styles.backgroundImage}
     >
       <View style={styles.overlay}>
+        {/* Logo for the Home Screen */}
+        <Image
+          source={{
+            uri: "https://seeklogo.com/images/B/basketball-logo-15048F5611-seeklogo.com.png",
+          }}
+          style={{ width: 150, height: 150, alignSelf: "center" }}
+        />
+
         {/* Heading for the Home Screen */}
         <Text style={styles.heading}>Welcome to Basketball Fantasy Team</Text>
 
-        {/* Button to navigate to the "MyTeam" screen */}
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate("MyTeam")}
-        >
-          <Text style={styles.buttonText}>Create your own team</Text>
-        </TouchableOpacity>
+        {/* Heading for the Latest News section */}
+        <Text style={[styles.heading, { textAlign: "left" }]}>
+          Latest News:
+        </Text>
 
-        {/* Button to navigate to the "Players" screen */}
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate("Players")}
-        >
-          <Text style={styles.buttonText}>Look at your best players</Text>
-        </TouchableOpacity>
-
-        {/* Heading for the Random Players section */}
-        <Text style={styles.heading}>Random Players:</Text>
-
-        {/* FlatList to display random player cards */}
+        {/* FlatList to display news items horizontally */}
         <FlatList
-          data={playersData}
-          keyExtractor={(item) => item.id}
+          data={news}
+          keyExtractor={(item) => item.link}
+          horizontal
+          showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            // TouchableOpacity for each player card, navigating to the "PlayerProfile" screen
+            // TouchableOpacity for each news item, opening the link in the browser
             <TouchableOpacity
-              style={styles.card}
+              style={styles.newsCard}
               onPress={() => {
-                navigation.navigate("PlayerProfile", {
-                  player: item,
-                });
+                Linking.openURL(item.link);
               }}
             >
-              {/* Player image */}
-              <Image source={{ uri: item.image }} style={styles.playerImage} />
+              {/* News image */}
+              <Image source={{ uri: item.image }} style={styles.newsImage} />
 
-              {/* Player name */}
-              <Text style={styles.playerName}>{item.name}</Text>
+              {/* News title */}
+              <Text style={styles.newsTitle}>{item.title}</Text>
 
-              {/* Player stats */}
-              <Text style={styles.playerStats}>{item.stats}</Text>
+              {/* "See More" button */}
+              <TouchableOpacity
+                style={styles.seeMoreButton}
+                onPress={() => {
+                  Linking.openURL(item.link);
+                }}
+              >
+                <Text style={styles.seeMoreButtonText}>See More</Text>
+              </TouchableOpacity>
             </TouchableOpacity>
           )}
-          numColumns={2}
         />
       </View>
     </ImageBackground>
@@ -120,7 +100,7 @@ const HomeScreen = ({ navigation }) => {
 
 // Styles for the Home Screen
 const styles = StyleSheet.create({
-  // Style for the background image
+  // ... (existing styles)
   backgroundImage: {
     flex: 1,
     resizeMode: "cover",
@@ -137,6 +117,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
     marginBottom: 20,
+    textAlign: "center",
   },
   // Style for the button
   button: {
@@ -173,6 +154,51 @@ const styles = StyleSheet.create({
   },
   // Style for the player stats text
   playerStats: {
+    fontSize: 14,
+  },
+
+  // Style for the news card
+  newsCard: {
+    width: 200,
+    backgroundColor: "white",
+    borderRadius: 16,
+    padding: 10,
+    margin: 10,
+    elevation: 10, // Add elevation for shadow on Android
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    flex: 1,
+  },
+  // Style for the news image
+  newsImage: {
+    width: "100%",
+    height: 150,
+    borderRadius: 12,
+    marginBottom: 10,
+    flex: 1.5,
+  },
+  // Style for the news title text
+  newsTitle: {
+    fontSize: 14,
+    marginBottom: 10,
+    color: "#333", // Darken the text color
+    flex: 1,
+    letterSpacing: 0.25,
+  },
+  // Style for the "See More" button
+  seeMoreButton: {
+    backgroundColor: colors.primary,
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  // Style for the "See More" button text
+  seeMoreButtonText: {
+    color: "white",
+    fontWeight: "bold",
     fontSize: 14,
   },
 });
