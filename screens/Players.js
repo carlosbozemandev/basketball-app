@@ -1,5 +1,4 @@
-// Importing necessary components and modules from React and React Native
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,72 +6,52 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
+  TextInput,
+  Button,
 } from "react-native";
+
+const url = "https://sportscore1.p.rapidapi.com/sports/3/players";
+const itemsPerPage = 10;
+const options = {
+  method: "GET",
+  headers: {
+    "X-RapidAPI-Key": "d86b55a31emsh20bdf138bb0c79fp16104djsn08cbc3b5570f",
+    "X-RapidAPI-Host": "sportscore1.p.rapidapi.com",
+  },
+};
 
 // Functional component for the Players Screen
 const PlayersScreen = () => {
-  // Sample data for player cards
-  const playersData = [
-    // Player 1
-    {
-      id: 657,
-      name: "Đorđe Gagić",
-      position: "C",
-      age: 32,
-      height: 2.1,
-      photo: "https://tipsscore.com/resb/player/dorde-gagic.png",
-      team: {
-        name: "BC Wolves",
-        logo: "https://tipsscore.com/resb/team/bc-wolves.png",
-      },
-    },
-    // Player 2
-    {
-      id: 658,
-      name: "LeBron James",
-      position: "SF",
-      age: 36,
-      height: 2.06,
-      photo: "https://cdn.nba.com/headshots/nba/latest/1040x760/2544.png",
-      team: {
-        name: "Los Angeles Lakers",
-        logo: "https://cdn.nba.com/logos/nba/1610612747/global/L/logo.svg",
-      },
-    },
-    // Player 3
-    {
-      id: 659,
-      name: "Stephen Curry",
-      position: "PG",
-      age: 33,
-      height: 1.91,
-      photo: "https://cdn.nba.com/headshots/nba/latest/1040x760/201939.png",
-      team: {
-        name: "Golden State Warriors",
-        logo: "https://cdn.nba.com/logos/nba/1610612744/global/L/logo.svg",
-      },
-    },
-    // Player 4
-    {
-      id: 660,
-      name: "Giannis Antetokounmpo",
-      position: "PF",
-      age: 26,
-      height: 2.11,
-      photo: "https://cdn.nba.com/headshots/nba/latest/1040x760/203507.png",
-      team: {
-        name: "Milwaukee Bucks",
-        logo: "https://cdn.nba.com/logos/nba/1610612749/global/L/logo.svg",
-      },
-    },
-  ];
+  const [players, setPlayers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // Function to render each player card
+  useEffect(() => {
+    fetchPlayers();
+  }, []);
+
+  const fetchPlayers = () => {
+    const query = `?page=${currentPage}&limit=${itemsPerPage}`;
+    fetch(url + query, options)
+      .then((res) => res.json())
+      .then((res) => {
+        setPlayers(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const handleLoadMore = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
   const renderPlayerCard = ({ item }) => (
     // TouchableOpacity for each player card
     <TouchableOpacity
       style={styles.card}
       onPress={() => console.log("Player card pressed")}
+      key={item.id}
     >
       {/* Player image */}
       <Image source={{ uri: item.photo }} style={styles.playerImage} />
@@ -80,33 +59,57 @@ const PlayersScreen = () => {
       {/* Player information view */}
       <View style={styles.playerInfo}>
         {/* Player name */}
-        <Text style={styles.playerName}>{item.name}</Text>
+        <Text style={styles.playerName}>{item?.name}</Text>
 
         {/* Player position */}
-        <Text style={styles.playerPosition}>{item.position}</Text>
+        <Text style={styles.playerPosition}>{item?.position}</Text>
 
         {/* Player details (age and height) */}
         <Text
           style={styles.playerDetails}
-        >{`Age: ${item.age} | Height: ${item.height}m`}</Text>
+        >{`Age: ${item?.age} | Height: ${item?.height}m`}</Text>
 
         {/* Team name */}
-        <Text style={styles.teamName}>{`Team: ${item.team.name}`}</Text>
+        <Text style={styles.teamName}>{`Team: ${item?.team?.name}`}</Text>
 
         {/* Team logo */}
-        <Image source={{ uri: item.team.logo }} style={styles.teamLogo} />
+        <Image source={{ uri: item?.team?.logo }} style={styles.teamLogo} />
       </View>
     </TouchableOpacity>
   );
 
+  const handleSearch = () => {
+    // Perform search logic based on the searchQuery
+    // You can filter the players array based on name or id
+    const filteredPlayers = players.filter(
+      (player) =>
+        player.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        player.id.toString().includes(searchQuery)
+    );
+
+    setPlayers(filteredPlayers);
+  };
+
   return (
     // Container view for the Players Screen
     <View style={styles.container}>
+      {/* Search bar and button */}
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search by name or ID"
+          onChangeText={(text) => setSearchQuery(text)}
+        />
+        <Button title="Search" onPress={handleSearch} />
+      </View>
+
       {/* FlatList to display player cards */}
       <FlatList
-        data={playersData}
+        data={players}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderPlayerCard}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.1}
       />
     </View>
   );
@@ -125,7 +128,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white",
     borderRadius: 8,
-    padding: 15,
+    padding: 10,
     marginBottom: 10,
   },
   // Style for the player image
@@ -165,6 +168,20 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginTop: 5,
+  },
+  // Style for the search container
+  searchContainer: {
+    flexDirection: "row",
+    marginBottom: 10,
+  },
+  // Style for the search input
+  searchInput: {
+    flex: 1,
+    marginRight: 10,
+    padding: 10,
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 8,
   },
 });
 
