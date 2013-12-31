@@ -60,7 +60,7 @@ const HomeScreen = ({ navigation }) => {
     // Background Image for the Home Screen
     <ImageBackground
       source={{
-        uri: "https://www.wallart.com/media/catalog/product/cache/871f459736130e239a3f5e6472128962/w/0/w03232-small.jpg",
+        uri: "https://media.istockphoto.com/id/535814795/photo/basketball-player-in-jump-shot.webp?b=1&s=170667a&w=0&k=20&c=i7OnE5znRzS3h9EpWH8EaD5cbIlv9V7ArC3cdMFo4Ro=",
       }}
       style={styles.backgroundImage}
     >
