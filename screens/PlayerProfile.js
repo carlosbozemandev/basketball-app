@@ -12,24 +12,57 @@ const PlayerScreen = ({ route }) => {
     // Image background for the Player Screen
     <ImageBackground
       source={{
-        uri: player.image,
+        uri: player.photo,
       }}
       style={styles.container}
     >
       {/* SafeAreaView for handling content within the safe area of the device */}
       <SafeAreaView style={styles.overlay}>
         {/* Player image */}
-        <Image source={{ uri: player.image }} style={styles.playerImage} />
+        <Image source={{ uri: player.photo }} style={styles.playerImage} />
 
         {/* Player information view */}
         <View style={styles.playerInfo}>
           {/* Player name */}
           <Text style={styles.playerName}>{player.name}</Text>
 
-          {/* Player statistics */}
-          <Text style={styles.playerStats}>{player.stats}</Text>
+          {/* Player position */}
+          <Text
+            style={styles.playerPosition}
+          >{`Position: ${player.position_name}`}</Text>
 
-          {/* Add more player information as needed */}
+          {/* Player age */}
+          <Text style={styles.playerAge}>{`Age: ${player.age}`}</Text>
+
+          {/* Player height */}
+          <Text style={styles.playerHeight}>{`Height: ${player.height}m`}</Text>
+
+          {/* Player weight */}
+          <Text
+            style={styles.playerHeight}
+          >{`Weight: ${player.weight}kg`}</Text>
+
+          {/* Player Shirt Number */}
+          <Text
+            style={styles.playerHeight}
+          >{`Shirt Number: ${player.shirt_number}`}</Text>
+
+          {/* Player Flag */}
+          <Text style={styles.playerHeight}>{`Country: ${player.flag}`}</Text>
+
+          {/* Team details */}
+          <View style={styles.teamInfo}>
+            {/* Team name */}
+            <Text
+              style={styles.teamName}
+            >{`Team: ${player.main_team.name}`}</Text>
+
+            {/* Team logo */}
+            <Image
+              source={{ uri: player.main_team.logo }}
+              style={styles.teamLogo}
+            />
+          </View>
         </View>
       </SafeAreaView>
     </ImageBackground>
@@ -69,9 +102,36 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
   },
-  // Style for the player statistics text
-  playerStats: {
+  // Style for the player position text
+  playerPosition: {
     fontSize: 18,
+    color: "gray",
+  },
+  // Style for the player age text
+  playerAge: {
+    fontSize: 18,
+    color: "gray",
+  },
+  // Style for the player height text
+  playerHeight: {
+    fontSize: 18,
+    color: "gray",
+    textTransform: "capitalize",
+  },
+  // Style for the team details view
+  teamInfo: {
+    marginTop: 15,
+  },
+  // Style for the team name text
+  teamName: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  // Style for the team logo
+  teamLogo: {
+    width: 50,
+    height: 50,
+    marginTop: 5,
   },
 });
 
