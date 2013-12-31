@@ -1,103 +1,122 @@
-// Importing necessary components and modules from React and React Native
-import { View, Text } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import Home from "../screens/Home";
 import MyTeam from "../screens/MyTeam";
-import { Ionicons } from "@expo/vector-icons";
-import { colors } from "../theme";
 import Players from "../screens/Players";
+import News from "../screens/News";
+import User from "../screens/User";
+import { colors } from "../theme";
 
-// Creating a bottom tab navigator using createBottomTabNavigator
 const Tab = createBottomTabNavigator();
 
-// Exporting the bottom tab navigator component as the default export
-export default function MyBottomTab() {
-  return (
-    // Bottom Tab Navigator configuration
-    <Tab.Navigator
-      screenOptions={() => {
-        return {
-          // Styling for the header
-          headerStyle: {
-            backgroundColor: colors.primary,
-          },
-          headerTintColor: "#fff",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
-
-          // Styling for the tab bar
-          tabBarStyle: {
-            backgroundColor: colors.primary,
-          },
-          tabBarActiveTintColor: "white",
-          tabBarInactiveTintColor: "black",
-          tabBarLabelStyle: {
-            fontSize: 20,
-            fontWeight: "bold",
-          },
-
-          // Additional tab bar styling options
-          tabBarHideOnKeyboard: true,
-          tabBarIconStyle: {
-            width: 50,
-            height: 50,
-          },
-          tabBarLabelPosition: "below-icon",
-          tabBarAllowFontScaling: true,
-          tabBarKeyboardHidesTabBar: true,
-        };
+const CustomTabBarButton = ({ children, onPress }) => (
+  <TouchableOpacity
+    style={{
+      top: -30, // Adjust the top position as needed
+    }}
+    onPress={onPress}
+  >
+    <View
+      style={{
+        width: 70,
+        height: 70,
+        borderRadius: 35,
+        backgroundColor: colors.primary,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 10,
       }}
     >
-      {/* Screen for the Home tab */}
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{
-          title: "Home",
-          // Icon for the Home tab
-          tabBarIcon: ({ focused }) => (
+      {children}
+    </View>
+  </TouchableOpacity>
+);
+
+const MyBottomTab = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarStyle: styles.tabBar,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: "black",
+        tabBarLabelStyle: styles.tabLabel,
+        tabBarIconStyle: styles.tabIcon,
+        tabBarHideOnKeyboard: true,
+        tabBarLabelPosition: "below-icon",
+        tabBarAllowFontScaling: true,
+        tabBarKeyboardHidesTabBar: true,
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === "Home") {
+            iconName = focused ? "home" : "home-outline";
+          } else if (route.name === "MyTeam") {
+            iconName = focused ? "people" : "people-outline";
+          } else if (route.name === "Players") {
+            iconName = focused ? "person" : "person-outline";
+          } else if (route.name === "News") {
+            iconName = focused ? "newspaper" : "newspaper-outline";
+          } else if (route.name === "User") {
+            iconName = focused ? "person-circle" : "person-circle-outline";
+          }
+
+          // You can return any component that you like here!
+          return (
             <Ionicons
-              name={focused ? "home" : "home-outline"}
+              name={iconName}
               size={24}
-              color={focused ? "white" : "black"}
+              color={focused ? colors.primary : "black"}
             />
-          ),
-        }}
-      />
-      {/* Screen for the Players tab */}
+          );
+        },
+      })}
+    >
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="MyTeam" component={MyTeam} />
       <Tab.Screen
         name="Players"
         component={Players}
         options={{
-          title: "Players",
-          // Icon for the Players tab
-          tabBarIcon: ({ focused }) => (
+          tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
               name={focused ? "person" : "person-outline"}
               size={24}
               color={focused ? "white" : "black"}
             />
           ),
+          tabBarActiveTintColor: "white",
+          tabBarInactiveTintColor: "black",
         }}
       />
-      {/* Screen for the MyTeam tab */}
-      <Tab.Screen
-        name="MyTeam"
-        component={MyTeam}
-        options={{
-          title: "My Team",
-          // Icon for the MyTeam tab
-          tabBarIcon: ({ focused }) => (
-            <Ionicons
-              name={focused ? "people" : "people-outline"}
-              size={24}
-              color={focused ? "white" : "black"}
-            />
-          ),
-        }}
-      />
+      <Tab.Screen name="News" component={News} />
+      <Tab.Screen name="User" component={User} />
     </Tab.Navigator>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  tabBar: {
+    backgroundColor: "white", // Adjust the background color as needed
+    borderTopColor: "transparent",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    height: 60,
+    paddingBottom: 10,
+    shadowColor: "transparent",
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  tabLabel: {
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  tabIcon: {
+    width: 30,
+    height: 30,
+  },
+});
+
+export default MyBottomTab;
