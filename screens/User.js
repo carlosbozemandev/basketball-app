@@ -1,32 +1,28 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
+import { useUser } from "../context/UserContext";
 
 // Dummy user data
-const user = {
-  name: "John Doe",
-  email: "john.doe@example.com",
-  phone: "123-456-7890",
-  image: "https://via.placeholder.com/150", // Replace this with the actual image URL
-};
 
 // Functional component for the User Screen
 const UserScreen = () => {
+  const { userDetails } = useUser();
   return (
     // Container view for the User Screen
     <View style={styles.container}>
       {/* User image */}
-      <Image source={{ uri: user.image }} style={styles.userImage} />
+      <Image source={{ uri: userDetails.image }} style={styles.userImage} />
 
       {/* User details view */}
       <View style={styles.userDetails}>
         {/* User name */}
-        <Text style={styles.userName}>{user.name}</Text>
+        <Text style={styles.userName}>{userDetails.name}</Text>
 
         {/* User email */}
-        <Text style={styles.userEmail}>{user.email}</Text>
+        <Text style={styles.userEmail}>{userDetails.email}</Text>
 
         {/* User phone number */}
-        <Text style={styles.userPhone}>{user.phone}</Text>
+        <Text style={styles.userPhone}>{userDetails.phoneNumber}</Text>
       </View>
     </View>
   );
