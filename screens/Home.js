@@ -61,14 +61,14 @@ const HomeScreen = ({ navigation }) => {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => console.log("Create your own team pressed")}
+          onPress={() => navigation.navigate("MyTeam")}
         >
           <Text style={styles.buttonText}>Create your own team</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => console.log("Look at your best players pressed")}
+          onPress={() => navigation.navigate("Players")}
         >
           <Text style={styles.buttonText}>Look at your best players</Text>
         </TouchableOpacity>
