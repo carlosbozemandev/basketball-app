@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,13 +6,45 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
+  Image,
 } from "react-native";
 import { usePlayers } from "../context/PlayerContext";
+import { colors } from "../theme";
+import { useNavigation } from "@react-navigation/native";
+
+const url = "https://sportscore1.p.rapidapi.com/sports/3/players";
+const itemsPerPage = 10;
+const options = {
+  method: "GET",
+  headers: {
+    "X-RapidAPI-Key": "d86b55a31emsh20bdf138bb0c79fp16104djsn08cbc3b5570f",
+    "X-RapidAPI-Host": "sportscore1.p.rapidapi.com",
+  },
+};
 
 const CreateTeamScreen = () => {
-  const { players } = usePlayers(); // Assuming you have a context for players
+  const { updatePlayers } = usePlayers(); // Assuming you have a context for players
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [teamName, setTeamName] = useState("");
+  const [playersData, setPlayersData] = useState([]);
+  const [error, setError] = useState(false);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const fetchPlayers = () => {
+      fetch(url, options)
+        .then((res) => res.json())
+        .then((res) => {
+          if (res?.data) {
+            setPlayersData(res.data);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+    fetchPlayers();
+  }, []);
 
   const togglePlayerSelection = (player) => {
     // Check if the player is already selected, if yes, remove from the list
@@ -30,6 +62,7 @@ const CreateTeamScreen = () => {
       } else {
         // Show a message or take appropriate action if the user tries to select more than 12 players
         console.warn("You can only select up to 12 players for your team.");
+        alert("You can only select up to 12 players for your team.");
       }
     }
   };
@@ -37,11 +70,25 @@ const CreateTeamScreen = () => {
   const handleTeamSubmit = () => {
     // Save the team details (teamName and selectedPlayers) to your context or AsyncStorage
     // ...
+    console.log("Team Name:", teamName);
+    console.log("Selected Players:", selectedPlayers);
+
+    if (teamName.length < 5) {
+      setError(true);
+      return;
+    }
+    updatePlayers({
+      name: teamName,
+      players: selectedPlayers,
+    });
+    navigation.navigate("TabScreen");
 
     // Reset state after submitting the team
     setTeamName("");
     setSelectedPlayers([]);
   };
+
+  // console.log(playersData,"playersdata -------------------------------------")
 
   const renderPlayerCard = ({ item }) => (
     <TouchableOpacity
@@ -52,7 +99,8 @@ const CreateTeamScreen = () => {
       ]}
       onPress={() => togglePlayerSelection(item)}
     >
-      <Text style={styles.playerName}>{item.name}</Text>
+      <Image source={{ uri: item.photo }} style={styles.playerImage} />
+      <Text style={styles.playerName}>{item?.name}</Text>
     </TouchableOpacity>
   );
 
@@ -64,23 +112,40 @@ const CreateTeamScreen = () => {
         placeholder="Enter Team Name"
         value={teamName}
         onChangeText={(text) => setTeamName(text)}
+        onTouchEnd={() => setError(true)}
       />
-
-      {selectedPlayers.length > 0 && (
-        <Text style={styles.header}>Selected Players</Text>
+      {error && teamName.length < 5 && (
+        <Text style={styles.errorText}>
+          Team name must be required and at least 5 characters long
+        </Text>
       )}
 
-      {players && players.length === 0 ? (
+      {selectedPlayers.length > 0 ? (
+        <Text style={styles.header}>
+          Selected Players: {selectedPlayers.length}/12
+        </Text>
+      ) : (
+        <Text style={styles.header}>Select Players:</Text>
+      )}
+
+      {playersData && playersData.length === 0 ? (
         <Text style={styles.header}>No Players Found</Text>
       ) : (
         <FlatList
-          data={players}
+          data={playersData}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderPlayerCard}
           numColumns={3}
         />
       )}
-      <TouchableOpacity style={styles.submitButton} onPress={handleTeamSubmit}>
+      <TouchableOpacity
+        style={[
+          styles.submitButton,
+          selectedPlayers.length < 12 && { opacity: 0.5 },
+        ]}
+        onPress={handleTeamSubmit}
+        disabled={selectedPlayers.length < 12}
+      >
         <Text style={styles.submitButtonText}>Submit Team</Text>
       </TouchableOpacity>
     </View>
@@ -120,8 +185,14 @@ const styles = StyleSheet.create({
   playerName: {
     fontSize: 16,
   },
+  playerImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
   submitButton: {
-    backgroundColor: "#3498db",
+    backgroundColor: colors.primary,
     padding: 15,
     borderRadius: 8,
     alignItems: "center",
@@ -130,6 +201,10 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: "white",
     fontWeight: "bold",
+  },
+  errorText: {
+    color: "red",
+    marginBottom: 10,
   },
 });
 

@@ -16,13 +16,15 @@ const UserScreen = () => {
       {/* User details view */}
       <View style={styles.userDetails}>
         {/* User name */}
-        <Text style={styles.userName}>{userDetails.name}</Text>
+        <Text style={styles.userName}>Name: {userDetails.name}</Text>
 
         {/* User email */}
-        <Text style={styles.userEmail}>{userDetails.email}</Text>
+        <Text style={styles.userEmail}>Email: {userDetails.email}</Text>
 
         {/* User phone number */}
-        <Text style={styles.userPhone}>{userDetails.phoneNumber}</Text>
+        <Text style={styles.userPhone}>
+          Phone Number: {userDetails.phoneNumber}
+        </Text>
       </View>
     </View>
   );
@@ -35,17 +37,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#f0f0f0", // Light gray background color
+    padding: 20,
   },
   // Style for the user image
   userImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
+    width: "80%",
+    borderRadius: 40,
     marginBottom: 20,
+    height: 300,
   },
   // Style for the user details view
   userDetails: {
-    alignItems: "center",
     backgroundColor: "#fff", // White background color
     padding: 20,
     borderRadius: 15,
@@ -54,6 +56,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    width: "100%",
   },
   // Style for the user name text
   userName: {

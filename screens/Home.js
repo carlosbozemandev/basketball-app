@@ -8,6 +8,7 @@ import {
   FlatList,
   Image,
   Linking,
+  BackHandler,
 } from "react-native";
 import { colors } from "../theme";
 const url =
@@ -35,6 +36,21 @@ const HomeScreen = ({ navigation }) => {
         console.error(err);
       });
   }, []);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        if (navigation.isFocused()) {
+          BackHandler.exitApp();
+          return true;
+        }
+        return false;
+      }
+    );
+
+    return () => backHandler.remove();
+  }, [navigation]);
 
   return (
     // Background Image for the Home Screen

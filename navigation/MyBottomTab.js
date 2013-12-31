@@ -1,7 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
 import Home from "../screens/Home";
 import MyTeam from "../screens/MyTeam";
 import Players from "../screens/Players";
@@ -47,6 +47,16 @@ const MyBottomTab = () => {
         tabBarLabelPosition: "below-icon",
         tabBarAllowFontScaling: true,
         tabBarKeyboardHidesTabBar: true,
+        headerStyle: {
+          backgroundColor: "black",
+          height: 70,
+        },
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          color: "white",
+          fontSize: 20,
+          letterSpacing: 1,
+        },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 

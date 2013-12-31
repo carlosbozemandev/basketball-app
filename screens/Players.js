@@ -10,6 +10,7 @@ import {
   Button,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { colors } from "../theme";
 
 const url = "https://sportscore1.p.rapidapi.com/sports/3/players";
 const itemsPerPage = 10;
@@ -36,7 +37,9 @@ const PlayersScreen = () => {
     fetch(url + query, options)
       .then((res) => res.json())
       .then((res) => {
-        setPlayers((prevPlayers) => [...prevPlayers, ...res.data]);
+        if (res?.data) {
+          setPlayers(res.data);
+        }
       })
       .catch((err) => {
         console.error(err);
@@ -49,7 +52,7 @@ const PlayersScreen = () => {
     if (text.trim() === "") {
       fetchPlayers();
     } else {
-      const filteredPlayers = players.filter(
+      const filteredPlayers = players?.filter(
         (player) =>
           player.name.toLowerCase().includes(text.toLowerCase()) ||
           player.id.toString().includes(text)
@@ -92,32 +95,47 @@ const PlayersScreen = () => {
   );
 
   // Apply slice for pagination
-  const paginatedPlayers = players.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const paginatedPlayers =
+    players.length &&
+    players.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search by name or ID"
-        onChangeText={handleSearch}
-      />
+      {players.length === 0 ? (
+        <Text style={styles.playerName}>No Players Found</Text>
+      ) : (
+        <>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search by name or ID"
+            onChangeText={handleSearch}
+          />
 
-      <FlatList
-        data={paginatedPlayers}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderPlayerCard}
-        onEndReached={fetchPlayers} // Load more data when reaching the end
-        onEndReachedThreshold={0.1}
-      />
+          {paginatedPlayers.length === 0 ? (
+            <Text style={{ textAlign: "center" }}>No players found</Text>
+          ) : (
+            <FlatList
+              data={paginatedPlayers}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={renderPlayerCard}
+            />
+          )}
 
-      <View style={styles.paginationContainer}>
-        <Button title="Previous Page" onPress={handlePrevPage} />
-        <Text>{`Page ${currentPage}`}</Text>
-        <Button title="Next Page" onPress={handleNextPage} />
-      </View>
+          <View style={styles.paginationContainer}>
+            <Button
+              title="Previous Page"
+              onPress={handlePrevPage}
+              color={colors.primary}
+            />
+            <Text>{`Page ${currentPage}`}</Text>
+            <Button
+              title="Next Page"
+              onPress={handleNextPage}
+              color={colors.primary}
+            />
+          </View>
+        </>
+      )}
     </View>
   );
 };

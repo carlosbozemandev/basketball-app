@@ -1,9 +1,10 @@
 // Importing necessary components and modules from React and React Native
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, FlatList } from "react-native";
 import { usePlayers } from "../context/PlayerContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
+import { colors } from "../theme";
 
 // Functional component for the My Team Screen
 const MyTeamScreen = () => {
@@ -48,53 +49,78 @@ const MyTeamScreen = () => {
   console.log("players data from context", players);
 
   return (
-    // Container view for the My Team Screen
-    <View style={styles.container}>
-      {players?.length > 0 ? (
-        <>
+    <>
+      {players.length ? (
+        <View style={styles.container}>
           {/* Team logo */}
           <Image source={{ uri: teamData.logo }} style={styles.teamLogo} />
 
           {/* Team name */}
-          <Text style={styles.teamName}>{teamData.name}</Text>
+          <Text style={styles.teamName}>{players.name}</Text>
 
           {/* Section heading for team players */}
           <Text style={styles.sectionHeading}>Team Players:</Text>
 
           {/* Mapping through each player in the teamData to display player cards */}
-          {teamData.players.map((player) => (
-            // View for each player card
-            <View key={player.id} style={styles.playerCard}>
-              {/* Player image */}
-              <Image
-                source={{ uri: player.photo }}
-                style={styles.playerImage}
-              />
 
-              {/* Player information */}
-              <View style={styles.playerInfo}>
-                {/* Player name */}
-                <Text style={styles.playerName}>{player.name}</Text>
+          <FlatList
+            data={players.players}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <View key={item.id} style={styles.playerCard}>
+                {/* item image */}
+                <Image
+                  source={{ uri: item.photo }}
+                  style={styles.playerImage}
+                />
 
-                {/* Player position */}
-                <Text style={styles.playerPosition}>{player.position}</Text>
+                {/* item information */}
+                <View style={styles.playerInfo}>
+                  {/* item name */}
+                  <Text style={styles.playerName}>{item.name}</Text>
 
-                {/* Player details (age and height) */}
-                <Text
-                  style={styles.playerDetails}
-                >{`Age: ${player.age} | Height: ${player.height}m`}</Text>
+                  {/* item position */}
+                  <Text style={styles.playerPosition}>{item.position}</Text>
+
+                  {/* item details (age and height) */}
+                  <Text
+                    style={styles.playerDetails}
+                  >{`Age: ${item.age} | Height: ${item.height}m`}</Text>
+                </View>
               </View>
-            </View>
-          ))}
-        </>
+            )}
+          />
+        </View>
       ) : (
-        <TouchableOpacity
-          onPress={() => navigation.navigate("CreateTeamScreen")}
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          <Text>Create your own team</Text>
-        </TouchableOpacity>
+          <Text style={styles.teamName}>You have not created a team yet.</Text>
+          <TouchableOpacity
+            style={{
+              backgroundColor: colors.primary,
+              padding: 10,
+              borderRadius: 8,
+            }}
+            onPress={() => navigation.navigate("CreateTeamScreen")}
+          >
+            <Text
+              style={{
+                color: colors.white,
+                fontWeight: "bold",
+                fontSize: 16,
+              }}
+            >
+              Create your own team
+            </Text>
+          </TouchableOpacity>
+        </View>
       )}
-    </View>
+    </>
   );
 };
 

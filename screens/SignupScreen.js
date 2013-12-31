@@ -12,6 +12,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import { useUser } from "../context/UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
 
 const SignupScreen = () => {
   const navigation = useNavigation();
@@ -20,7 +21,9 @@ const SignupScreen = () => {
     name: userDetails?.name || "",
     email: userDetails?.email || "",
     phoneNumber: userDetails?.phoneNumber || "",
-    image: userDetails?.image || "",
+    image:
+      userDetails?.image ||
+      "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png",
   });
 
   const pickImage = async () => {
@@ -44,6 +47,10 @@ const SignupScreen = () => {
   const handleSignup = () => {
     // Access user details from the state
     console.log("User Details:", userdata);
+    if (!userdata.name || !userdata.email || !userdata.phoneNumber) {
+      alert("Please fill in all the details");
+      return;
+    }
 
     // Update the user details in the context
     updateUserDetails(userdata);
@@ -73,6 +80,9 @@ const SignupScreen = () => {
         }
         style={styles.imagePreview}
       />
+      <TouchableOpacity style={styles.imagePickerButton} onPress={pickImage}>
+        <Ionicons name="image-outline" size={24} color="white" />
+      </TouchableOpacity>
 
       <View style={styles.inputContainer}>
         <TextInput
@@ -107,9 +117,6 @@ const SignupScreen = () => {
             }))
           }
         />
-        <TouchableOpacity style={styles.imagePickerButton} onPress={pickImage}>
-          <Text style={styles.imagePickerButtonText}>Pick an Image</Text>
-        </TouchableOpacity>
       </View>
 
       <TouchableOpacity style={styles.signupButton} onPress={handleSignup}>
@@ -149,11 +156,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   imagePickerButton: {
-    backgroundColor: "#3498db",
+    backgroundColor: "black",
     padding: 10,
     borderRadius: 8,
     alignItems: "center",
     marginBottom: 10,
+    width: 70,
   },
   imagePickerButtonText: {
     color: "white",

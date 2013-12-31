@@ -5,16 +5,20 @@ import MyBottomTab from "./MyBottomTab";
 import OnboardingScreen from "../screens/OnboardingScreens/OnboardingScreen";
 import SignupScreen from "../screens/SignupScreen";
 import CreateTeamScreen from "../screens/CreateTeamScreen";
+import { useUser } from "../context/UserContext";
+import CustomSplashScreen from "../screens/CustomSplashScreem";
 
 // Creating a stack navigator using createStackNavigator
 const Stack = createStackNavigator();
 
 // Function to define the stack navigator for the app
 function MyStack() {
+  const { userDetails } = useUser();
+  console.log("userDetails come form MyStack", userDetails);
   return (
     // Stack Navigator configuration
     <Stack.Navigator
-      initialRouteName="OnboardingScreen" // Set the initial screen name
+      initialRouteName={"CustomSplashScreen"}
       screenOptions={{
         // Styling for the header
         headerStyle: {
@@ -26,6 +30,15 @@ function MyStack() {
         },
       }}
     >
+      <Stack.Screen
+        name="CustomSplashScreen"
+        component={CustomSplashScreen}
+        options={() => {
+          return {
+            headerShown: false, // Hide the header for this screen
+          };
+        }}
+      />
       <Stack.Screen
         name="OnboardingScreen"
         component={OnboardingScreen}
